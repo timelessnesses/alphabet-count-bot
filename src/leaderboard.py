@@ -4,6 +4,8 @@ import typing
 import discord
 from discord.ext import commands
 
+from .models.db_models import Counting
+
 if typing.TYPE_CHECKING:
     from ..bot import IHatePylanceComplainsPleaseShutUp
 
@@ -51,31 +53,14 @@ class Leaderboard(commands.Cog):
         if not ctx.guild:
             return
         await ctx.defer()
-        servers = sorted(
-            await self.bot.db.fetch("SELECT * FROM counting"),
-            key=lambda x: x["count_number"],
-            reverse=True,
-        )[:10]
-        all_guilds = sorted(
-            await self.bot.db.fetch("SELECT * FROM counting"),
-            key=lambda x: x["count_number"],
-            reverse=True,
-        )
         embed = discord.Embed(title="Top 10 Servers by Chain Count", color=0x00FF00)
-        configs = await self.bot.db.fetch("SELECT * FROM config")
-        for i, server in enumerate(servers):
-            if server["count_number"] == 0:
-                continue
-            if server["guild_id"] in [x["guild_id"] for x in configs]:
-                config = [x for x in configs if x["guild_id"] == server["guild_id"]][0]
-                if config["is_same_person"] or config["save_count"]:  # unranked
-                    continue
-            embed.add_field(
-                name=f"{self.prefix(i + 1)}. {await self.bot.fetch_guild(server['guild_id'])}",
-                value=f"{server['count_number']} chains. (Currently at character {self.column(server['count_number'])})",
-                inline=False,
-            )
-        i_ = -1
+        
+        place = await self.bot.db.fetch(
+            """
+            """,
+            record_class=Counting
+        )
+        
         server_ = {}
         for i, server in enumerate(all_guilds):
             if server["guild_id"] == ctx.guild.id:

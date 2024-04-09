@@ -4,6 +4,7 @@ import discord
 from discord.ext import commands
 
 from .utils import stuffs
+from .models.db_models import Config
 
 if typing.TYPE_CHECKING:
     from ..bot import IHatePylanceComplainsPleaseShutUp
@@ -23,18 +24,18 @@ class setup_(commands.Cog, name="Setup"):
 
     @commands.hybrid_command()
     @commands.has_permissions(administrator=True)
-    async def setup(self, ctx: commands.Context) -> None:
+    async def setup(self, ctx: commands.Context, target_channel: discord.TextChannel, same_person = False, save_count=False) -> None:
         """
         Setup the alphabet counter
         """
         if not ctx.guild:
             return
         is_setupped = await self.bot.db.fetch(
-            "SELECT * FROM config WHERE guild_id = $1", ctx.guild.id
+            "SELECT already_setupped FROM config WHERE guild_id = $1 LIMIT 1", ctx.guild.id, record_class=Config
         )
         if not is_setupped:
             pass
-        elif is_setupped[0]["already_setupped"]:
+        elif is_setupped[0].already_setupped:
             view = stuffs.Confirm()
             await ctx.send(
                 embed=discord.Embed(
@@ -64,82 +65,23 @@ class setup_(commands.Cog, name="Setup"):
                         colour=discord.Colour.red(),
                     )
                 )
-        await ctx.send(
-            embed=discord.Embed(
-                title="Letter Counting Setup",
-                description="""
-                This command will ask you
-                1. Mention a channel
-                2. Can person counting without checking if it is a same person (Unranked if enabled) (true/false)
-                3. Save the count (Unranked if enabled) (true/false)
-                """,
-                colour=discord.Colour.green(),
-            ),
-        )
-        ask = [
-            "channel",
-            "same_person",
-            "save_count",
-        ]
-        answers = {}
-        a = None
-        j = None
-        for i in ask:
-            a = await ctx.send(
-                embed=discord.Embed(
-                    title="Please answer {}".format(i), colour=discord.Colour.green()
-                )
-            )
-            answer = await self.bot.wait_for(
-                "message", check=lambda m: m.author == ctx.author
-            )
-
-            if i == "channel":
-                answers[i] = int(answer.content.strip("<#>"))
-                j = answer
-            else:
-                answers[i] = True if answer.content.lower() == "true" else False
-            await a.delete()
-        if j is not None:
-            channel = j
-        else:
-            return
-        await self.bot.db.execute(
-            """
-            INSERT INTO config (guild_id, is_same_person, already_setupped, channel_id, save_count)
-            VALUES ($1, $2, $3, $4, $5)
-            """,
-            ctx.guild.id,
-            answers["same_person"],
-            True,
-            answers["channel"],
-            answers["save_count"],
-        )
-        await ctx.send(
-            embed=discord.Embed(
-                title="Setupped",
-                description=f"""
-                You have setupped this server.
-                Now {channel.content} will be enforced to count alphabet.
-                """,
-                colour=discord.Colour.green(),
-            )
-        )
-        channel = await ctx.guild.fetch_channel(int(channel.content.strip("<#>")))
-        message = await channel.send(
+                return
+        
+        message = await target_channel.send(
             embed=discord.Embed(
                 title="Alphabet Count Rules",
                 description=f"""
                 This channel has been claimed for alphabet count
                 Here's some rules
-                1. {"You can't chain alphabet count else this server will lose streak." if not answers["same_person"] else "You can chain alphabet count."}
+                1. {"You can't chain alphabet count else this server will lose streak." if not same_person else "You can chain alphabet count."}
                 2. You can't broke counting chain by typing anything other than alphabet else you will lose streak.
                 3. You can't make conversation in this channel else this server will lose streak.
+                {"4. All counts will never be broken because of `save_count` option is enabled" if save_count else ""}
                 """,
                 colour=discord.Colour.green(),
             )
         )
-        message2 = await channel.send(
+        message2 = await target_channel.send(
             embed=discord.Embed(
                 title="Alphabet Count Howto",
                 description="""
@@ -175,9 +117,18 @@ class setup_(commands.Cog, name="Setup"):
             "INSERT INTO counting (guild_id, count_number, count_channel_id, previous_person) VALUES ($1, $2, $3, $4)",
             ctx.guild.id,
             0,
-            channel.id,
+            target_channel.id,
             None,
         )
+        await self.bot.db.execute(
+            "INSERT INTO config(guild_id, is_same_person, already_setupped, channel_id, save_count) VALUES ($1,$2,$3,$4,$5)",
+            ctx.guild.id,
+            same_person,
+            True,
+            target_channel.id,
+            save_count
+        )
+        await ctx.send(embed=discord.Embed(color=discord.Color.green, title="Success"))
 
 
 async def setup(bot: "IHatePylanceComplainsPleaseShutUp"):
