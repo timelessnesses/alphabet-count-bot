@@ -28,13 +28,13 @@ from server import start
 formatting = logging.Formatter("[%(asctime)s] - [%(levelname)s] [%(name)s] %(message)s")
 
 logging.basicConfig(
-    level=logging.NOTSET,
+    level=logging.DEBUG,
     format="[%(asctime)s] - [%(levelname)s] [%(name)s] %(message)s",
     datefmt="%Y/%m/%d %H:%M:%S",
 )
 
 log = logging.getLogger("AlphabetBot")
-log.setLevel(logging.NOTSET)
+log.setLevel(logging.DEBUG)
 
 try:
     os.mkdir("logs")
@@ -44,6 +44,7 @@ with open("logs/bot.log", "w") as f:
     f.write("")
 f = logging.FileHandler("logs/bot.log")
 f.setFormatter(formatting)
+f.setLevel(logging.DEBUG)
 log.addHandler(f)
 
 logging.getLogger("discord").setLevel(logging.WARNING)  # mute
@@ -175,7 +176,7 @@ async def main():
                 log.info("Loaded jishaku")
                 observer.start()
                 log.info("Started file watcher")
-                bot.start_time = datetime.datetime.utcnow()
+                bot.start_time = datetime.datetime.now()
                 get_version()
                 log.info(
                     f"Started with version {bot.version_} and started at {bot.start_time}"

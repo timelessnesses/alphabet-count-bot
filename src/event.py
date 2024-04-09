@@ -20,40 +20,12 @@ class Events(commands.Cog):
         )
         discord_version = discord.__version__
         file = MISSING
-        if len(error_message) <= 4096:
+        if len(error_message) >= 4095:
             file = discord.File(
                 io.BytesIO(error_message.encode()), filename="errorlog.py"
             )
             error_message = "Error is too long consider reading the errorlog.py file."
-        if isinstance(error, commands.CommandNotFound):
-            if not ctx.invoked_with:
-                return
-            matches = difflib.get_close_matches(ctx.bot.commands, ctx.invoked_with)
-            if len(matches) >= 2:
-                await ctx.send(
-                    embed=discord.Embed(
-                        title="Did you mean...",
-                        description=f"{', '.join(matches)} or {matches[0]}?",
-                        color=discord.Color.yellow(),
-                    )
-                )
-            elif len(matches) == 1:
-                await ctx.send(
-                    embed=discord.Embed(
-                        title="Did you mean...",
-                        description=f"{matches[0]}?",
-                        color=discord.Color.yellow(),
-                    )
-                )
-            else:
-                await ctx.send(
-                    embed=discord.Embed(
-                        title="Command not found",
-                        description=f"{ctx.invoked_with} is not a valid command.",
-                        color=discord.Color.red(),
-                    )
-                )
-        elif isinstance(error, commands.MissingRequiredArgument):
+        if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
                 embed=discord.Embed(
                     title="Missing argument",

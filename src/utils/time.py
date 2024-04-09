@@ -38,7 +38,7 @@ class ShortTime:
 
         data = {k: int(v) for k, v in match.groupdict(default=0).items()}
         now = now or datetime.datetime.now(datetime.timezone.utc)
-        self.dt = now + relativedelta(**data)
+        self.dt = now + relativedelta(**data) # type: ignore
 
     @classmethod
     async def convert(cls, ctx, argument):
@@ -49,7 +49,7 @@ class HumanTime:
     calendar = pdt.Calendar(version=pdt.VERSION_CONTEXT_STYLE)
 
     def __init__(self, argument, *, now=None):
-        now = now or datetime.datetime.utcnow()
+        now = now or datetime.datetime.now().astimezone(datetime.timezone.utc)
         dt, status = self.calendar.parseDT(argument, sourceTime=now)
         if not status.hasDateOrTime:
             raise commands.BadArgument(
@@ -93,6 +93,7 @@ class FutureTime(Time):
 
 
 class UserFriendlyTime(commands.Converter):
+    dt: datetime.datetime
     """That way quotes aren't absolutely necessary."""
 
     def __init__(self, converter=None, *, default=None):
@@ -165,7 +166,7 @@ class UserFriendlyTime(commands.Converter):
             # foo date time
 
             # first the first two cases:
-            dt, status, begin, end, dt_string = elements[0]
+            dt, status, begin, end, _ = elements[0]
 
             if not status.hasDateOrTime:
                 raise commands.BadArgument(

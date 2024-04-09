@@ -218,7 +218,7 @@ class Pages(discord.ui.View):
         await self.show_checked_page(interaction, self.current_page - 1)
 
     @discord.ui.button(label="Current", style=discord.ButtonStyle.grey, disabled=True)
-    async def go_to_current_page(self, _: discord.Interaction, __: discord.ui.Button):
+    async def go_to_current_page(self, *_):
         pass
 
     @discord.ui.button(label="Next", style=discord.ButtonStyle.blurple)
