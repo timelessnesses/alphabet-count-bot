@@ -605,6 +605,6 @@ yarl==1.7.2; python_version >= "3.6" and python_full_version >= "3.8.0" \
     --hash=sha256:1edc172dcca3f11b38a9d5c7505c83c1913c0addc99cd28e993efeaafdfaa18d \
     --hash=sha256:797c2c412b04403d2da075fb93c123df35239cd7b4cc4e0cd9e5839b73f52c58 \
     --hash=sha256:45399b46d60c253327a460e99856752009fcee5f5d3c80b2f7c0cae1c38d56dd
-zipp==3.8.0; python_version < "3.10" and python_full_version >= "3.8.0" and python_version >= "3.7" \
+zipp==3.19.1; python_version < "3.10" and python_full_version >= "3.8.0" and python_version >= "3.7" \
     --hash=sha256:c4f6e5bbf48e74f7a38e7cc5b0480ff42b0ae5178957d564d18932525d5cf099 \
     --hash=sha256:56bf8aadb83c24db6c4b577e13de374ccfb67da2078beba1d037c17980bf43ad
