@@ -1,7 +1,7 @@
 aiodns==3.0.0; python_version >= "3.6" and python_full_version >= "3.8.0" \
     --hash=sha256:2b19bc5f97e5c936638d28e665923c093d8af2bf3aa88d35c43417fa25d136a2 \
     --hash=sha256:946bdfabe743fceeeb093c8a010f5d1645f708a241be849e17edfb0e49e08cd6
-aiohttp==3.9.0; python_version >= "3.6" \
+aiohttp==3.10.11; python_version >= "3.6" \
     --hash=sha256:1ed0b6477896559f17b9eaeb6d38e07f7f9ffe40b9f0f9627ae8b9926ae260a8 \
     --hash=sha256:7dadf3c307b31e0e61689cbf9e06be7a867c563d5a63ce9dca578f956609abf8 \
     --hash=sha256:a79004bb58748f31ae1cbe9fa891054baaa46fb106c2dc7af9f8e3304dc30316 \
@@ -605,6 +605,6 @@ yarl==1.7.2; python_version >= "3.6" and python_full_version >= "3.8.0" \
     --hash=sha256:1edc172dcca3f11b38a9d5c7505c83c1913c0addc99cd28e993efeaafdfaa18d \
     --hash=sha256:797c2c412b04403d2da075fb93c123df35239cd7b4cc4e0cd9e5839b73f52c58 \
     --hash=sha256:45399b46d60c253327a460e99856752009fcee5f5d3c80b2f7c0cae1c38d56dd
-zipp==3.8.0; python_version < "3.10" and python_full_version >= "3.8.0" and python_version >= "3.7" \
+zipp==3.19.1; python_version < "3.10" and python_full_version >= "3.8.0" and python_version >= "3.7" \
     --hash=sha256:c4f6e5bbf48e74f7a38e7cc5b0480ff42b0ae5178957d564d18932525d5cf099 \
     --hash=sha256:56bf8aadb83c24db6c4b577e13de374ccfb67da2078beba1d037c17980bf43ad
